@@ -1,0 +1,167 @@
+#include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
+struct player
+{
+	int grade;
+    char f[10];
+    int num;
+    char name[10];
+    int a;
+    double b;
+}; 
+void  main()                                             //主函数
+{
+	int i,n,sel,user=0,com=0;
+	struct player s[50];
+	struct player input_player();
+    double judge(int user, int com);
+    void output_player(struct player s[],int n);
+    void sort_player(struct player s[],int n);	
+	printf("———————————————————————————————\n");
+    printf("|                欢迎来到由一锤子独家冠名支持！！！          |\n");
+    printf("|              大型推广类游戏——剪刀石头布大对抗            |\n");
+	printf("———————————————————————————————\n");
+    printf("请您选择运行的游戏模式，1为人机练习模式  2为实名对战模式  0退出     \n");            
+    printf("请输入数字（1或2或0）；");
+	scanf("%d",&sel);            
+	switch(sel)                                        //多分支处理
+	{
+	case 0:	break;
+	case 1:                                            //人机练习模式
+		{ 
+			srand((unsigned)time(NULL));             //初始化随机数,避免电脑每次产生的数字序列相同
+            printf("游戏即将开始\n");
+	        judge(user,com);
+		} 
+		break;
+	case 2: 
+		{
+			printf("请输入玩家人数：");
+            scanf("%d",&n);
+            for(i=0;i<n;i++)
+			{
+				printf("\n请输入第%d玩家信息：\n",i+1);
+				s[i]=input_player();
+			}
+			sort_player(s,n);
+            printf("———————————————————————————————\n");
+            printf("\n                       游戏排行榜                           \n");
+			printf("———————————————————————————————\n");
+			output_player(s,n);
+		} 
+		break;
+	}
+}
+double judge(int user, int com)                          //函数自定义
+{
+	int i,a=0;int b=0;
+    printf("本人机练习模式采取的是五局三胜制\n");
+    printf("----------------------------------------------------------\n");
+	for(i=1;i<=5;i++)
+{
+		printf("请出拳（1、剪刀 2、石头 3、布）:");
+		scanf("%d",&user);
+		com=rand()%3+1;                             //产生1-3范围内的随机数
+		printf("电脑出%s\n",com==1?"剪刀":com==2?"石头":"布");
+		switch(com-user)                        //用电脑产生的数字和用户输入的数字的差值来判断胜负
+		{
+		case 0:
+			printf("平局！！！\n");
+			break;
+		case 1:
+		case -2:
+			a++;printf("电脑赢了，傻哔哔哔哔哔哔哔哔\n");
+			break;
+		case -1:
+		case 2:
+		b++;
+			printf("你赢了，开火车了呜呜呜呜呜呜呜呜呜呜呜呜呜呜\n");
+		}
+}
+	printf("—————————————————————————————\n");
+    printf("|                     电脑赢了%d局                        |\n",a);
+	printf("|                     玩家赢了%d局                        |\n",b);
+	printf("—————————————————————————————\n");
+	if(b>a)
+		printf("你赢了，呜呜呜呜呜呜呜呜呜呜呜呜呜呜呜\n");
+	else if(b<a)
+		printf("电脑赢了，傻哔哔哔哔哔哔哔哔哔哔哔哔哔哔\n");
+	else if(b==a)
+		printf("平局！！！\n");
+	return 0;
+}
+struct player  input_player ()
+{
+	double count=0;
+	char c; 
+    double e=0;
+   	struct player s;
+    int com;
+    srand((unsigned)time(NULL));                               //初始化随机数,避免电脑每次产生的数字序列相同（同上述）
+   	printf("游戏即将开始\n");
+	printf("年级 班级 ：");
+	scanf("%d%s",&s.grade,&s.f);
+	printf("玩家学号（末两位即可） 昵称 :");
+	scanf("%d%s",&s.num,&s.name); 
+	printf("即将进入游戏\n");
+	printf("注意！注意！！！玩家请自觉进行五局或以上局数\n");
+    do
+	{
+		printf("请出拳（1、剪刀 2、石头 3、布）:");
+		scanf("%d",&s.a);
+		com=rand()%3+1;                                       //产生1-3范围内的随机数（同上述）
+		printf("电脑出%s\n",com==1?"剪刀":com==2?"石头":"布");
+		switch(com-s.a)                                       //用电脑产生的数字和用户输入的数字的差值来判断胜负（同上述）
+		{
+		case 0:
+		count++;
+		printf("平局！！！\n");
+		break;
+		case 1:
+		case -2:
+			count++;
+			printf("电脑赢了，你是不是傻= =\n");
+			break;
+		case -1:
+		case 2:
+			{
+				e++;count++;	
+			    printf("你赢了 =0=~~~\n");
+			}
+		}
+		printf("继续游戏请按数字9，退出游戏请按任意键");
+		getchar();
+		c=getchar();
+	}
+	while(c=='9' || c=='9');
+	s.b=e*100/count;
+	printf("玩家胜率(%%)：%.2f\n",s.b);
+	return s;
+}
+void sort_player(struct player s[],int n)
+{
+	int i,j,index;
+	struct player temp;
+	for(i=0;i<n-1;i++)
+	{
+		index=i;
+		for(j=i;j<n;j++)
+		if(s[j].b>s[index].b)
+		index=j;
+		temp=s[i];
+		s[i]=s[index];
+		s[index]=temp;
+	}
+}
+void output_player(struct player s[],int n)
+{
+	int i;
+	printf("\n---------------------------------------------------------\n");  
+	printf("\n年级      班级          玩家学号         昵称     胜率(%%)\n");
+	for(i=0;i<n;i++)
+	{
+		printf("\n---------------------------------------------------------\n"); 
+		printf("%-10d%-15s%-15d%-10s%.2f\n",s[i].grade,s[i].f,s[i].num,s[i].name,s[i].b);
+	}
+}
